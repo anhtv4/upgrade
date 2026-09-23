@@ -6,18 +6,19 @@ Toc do: < 5 gio/tuan. Tong thoi luong uoc tinh: ~5-6 thang cho 8 phase chinh.
 
 ## Phase 1 - Nen tang & kien truc (~2 tuan)
 Setup Spring Boot + Hexagonal Architecture (domain / application / infrastructure). Dinh nghia bounded context: User, Service Catalog, Booking, Notification, Payment.
-Trang thai: CHUA BAT DAU (phase hien tai). Da co skeleton tao san, nguoi lam chua tu lam.
-Cach lam: cat skeleton sang nhanh git tham khao, tu viet lai slice "tao booking" tu dau, chi mo skeleton khi bi; xong thi so sanh va ghi lai khac biet. Bo sung tai lieu bounded context.
+Trang thai: DANG LAM (bat dau 2026-09-23). Tien do chi tiet: `docs/progress.md`.
+Cach lam: skeleton da cat sang nhanh git `skeleton-reference`, nhanh `main` tu viet lai slice "tao booking" tu dau, chi mo skeleton khi bi; xong thi so sanh va ghi lai khac biet. Bo sung tai lieu bounded context.
 Skeleton co san: Hexagonal, vertical slice "tao booking" chay het domain -> application -> infrastructure. Pattern trong skeleton: Repository (`BookingRepository` port), Adapter (`BookingRepositoryAdapter`), Factory (`Booking.createNew/reconstitute`), Strategy (`ConflictPolicy`). Value object (`BookingId`, `CustomerId`, `TimeSlot`) da la record.
 Luu y: moi chi hien thuc bounded context Booking; cac context con lai (User, Service Catalog, Notification, Payment) moi dung o muc dinh nghia ten.
 
 ## Phase 2 - Domain Model & Design Patterns (~5-6 tuan) - TRONG TAM
+Trang thai: CHUA BAT DAU.
 Pham vi: chi mo rong Booking context. User, Service Catalog, Payment van la ID/string tho.
 - Provider: them `ProviderId` vao `Booking`, sua conflict check theo provider thay vi customer (skeleton hien tai check theo `customerId` vi chua co khai niem provider).
 - State pattern: nang `BookingStatus` tu enum len sealed interface + pattern matching, vong doi PENDING -> AWAITING_PAYMENT -> CONFIRMED -> COMPLETED (CANCELLED nhanh ra tu nhieu diem); moi trang thai tu quyet dinh trang thai ke tiep hop le, thay cho if/else nhu `Booking.confirm()` hien tai. Thanh toan chi mo phong (VD `Booking.markPaymentReceived()`).
 - Observer/domain events: `BookingCreatedEvent`, `BookingConfirmedEvent` qua Spring `ApplicationEventPublisher` (noi bo, CHUA dung message broker - do la Phase 8).
 - Bai tap refactor: viet 1 doan "bad design" (God class, if/else long nhau) roi refactor sang "good design", so sanh truoc/sau.
-- Ket thuc phase: viet ADR `docs/adr/0002-...md` ve State pattern + Observer + trade-off.
+- Ket thuc phase: viet ADR ve State pattern + Observer + trade-off.
 
 ## Phase 3 - Persistence chuan chinh (~3 tuan)
 JPA nang cao: optimistic locking, JPA Auditing, Specification/Querydsl, Flyway migration.
@@ -49,4 +50,6 @@ QUYET DINH DA CHOT: chua tach ngay. Chi lam khi Phase 1-8 da vung. Quyet dinh ta
 - Multi-tenant: neu lam thi la bai tap rieng, khong gan vao lo trinh chinh.
 
 ## Thoi quen xuyen suot
-Moi phase ket thuc bang 1 ADR ngan (xem docs/adr/) ghi quyet dinh + trade-off.
+- Moi phase ket thuc bang 1 ADR ngan (xem docs/adr/, danh so tuan tu toan repo) ghi quyet dinh + trade-off.
+- Moi phase ket thuc bang `/kiem-tra` (phong van thu) -> cap nhat `docs/competencies.md`.
+- Moi buoi hoc: `/bat-dau` -> lam -> `/ket-thuc` (journal trong `docs/journal/`, tien do trong `docs/progress.md`).

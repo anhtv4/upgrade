@@ -1,60 +1,46 @@
 # Booking Platform - Du an hoc tap Spring Boot
 
 ## Muc tieu
-Du an ca nhan de luyen kien truc, design patterns, va cac cong nghe Spring Boot hien dai, tach biet voi cong viec chinh (HIS). Lo trinh day du: `docs/roadmap.md`.
+Du an ca nhan de luyen kien truc, design patterns, va cac cong nghe Spring Boot hien dai, tach biet voi cong viec chinh (HIS). Nghiep vu: dat lich salon/spa (1 cua hang, khong multi-tenant).
+
+Muc tieu cuoi: san sang phong van senior / nhay vao du an moi khong bi ngop.
+
+## Trang thai
+Dang o Phase 1 - tu viet lai tu dau tren nhanh `main`. Chi tiet: `docs/progress.md`.
 
 ## Stack
 - Java 21 (LTS)
-- Spring Boot 4.1 (Spring Framework 7, Jakarta EE 11) - luu y: nhanh Spring Boot 3.x da EOL tu giua 2026, nen bat dau ngay voi nhanh 4.x
+- Spring Boot 4.1 (Spring Framework 7, Jakarta EE 11) - nhanh Spring Boot 3.x da EOL tu giua 2026
 - Spring Data JPA + Hibernate
 - H2 (dev, in-memory) / PostgreSQL (profile `postgres`, dung tu Phase 3)
 - JUnit 5
 
 ## Cach chay
 ```bash
-mvn spring-boot:run
-```
-Mac dinh chay voi profile `dev` (H2 in-memory, console tai `/h2-console`).
-
-Thu API:
-```bash
-curl -X POST http://localhost:8080/api/bookings \
-  -H "Content-Type: application/json" \
-  -d '{"customerId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","serviceName":"Cat toc","start":"2026-10-01T09:00:00Z","end":"2026-10-01T10:00:00Z"}'
+mvn spring-boot:run   # profile dev (H2 in-memory, console tai /h2-console)
+mvn test
 ```
 
-## Kien truc: Hexagonal (Ports & Adapters)
+## Nhanh git
+- `main` - code tu viet.
+- `skeleton-reference` - skeleton tao san, chi de tham khao va so sanh cuoi Phase 1.
 
-```
-domain/            -> logic nghiep vu thuan, KHONG phu thuoc Spring/JPA
-  model/             entities & value objects (Booking, TimeSlot, BookingId...)
-  port/in/           use case interface (inbound port)
-  port/out/          repository interface (outbound port)
-  service/           domain service + Strategy pattern (ConflictPolicy)
+## Tai lieu
+| File | Noi dung |
+|---|---|
+| `docs/roadmap.md` | Lo trinh 9 phase |
+| `docs/progress.md` | Tien do hien tai, buoc tiep theo |
+| `docs/journal/` | Nhat ky tung buoi hoc |
+| `docs/competencies.md` | Ban do kien thuc + muc do dat duoc |
+| `docs/adr/` | Architecture Decision Records |
+| `CLAUDE.md` | Huong dan cho Claude Code (vai tro mentor, quy uoc) |
 
-application/        -> orchestrate domain, implement use case (inbound port)
-  usecase/
+## Lam viec voi Claude Code
+Claude dong vai tro mentor: goi y va review, khong viet code thay. Lenh trong `.claude/skills/`:
 
-infrastructure/     -> adapter, noi "ban" voi framework/DB/HTTP
-  persistence/        JPA entity + repository adapter
-  web/                 REST controller + DTO
-  config/              wiring bean cho domain layer
-```
-
-Nguyen tac: `domain/` khong import bat ky thu gi tu Spring hay JPA. Dieu nay giup test domain logic (`BookingDomainServiceTest`) chay cuc nhanh, khong can khoi dong Spring context - loi ich nay se ro hon o Phase 6 (Testing).
-
-## Pattern da ap dung trong Phase 1
-- **Repository pattern**: `BookingRepository` (port) tach biet domain khoi chi tiet luu tru
-- **Adapter pattern**: `BookingRepositoryAdapter` map giua domain model va JPA entity
-- **Factory pattern**: `Booking.createNew()` / `Booking.reconstitute()` - static factory thay vi constructor public
-- **Strategy pattern**: `ConflictPolicy` - hien co `NoOverlapConflictPolicy`, sau nay them chien luoc khac (VD: cho phep overbooking co gioi han) ma khong sua `BookingDomainService`
-
-## Chua lam o Phase 1 (dung theo lo trinh)
-- State pattern day du cho `BookingStatus` (hien la enum don gian) -> Phase 2
-- Flyway migration, index, isolation level -> Phase 3
-- Chuan hoa loi RFC 7807, OpenAPI -> Phase 4
-- Spring Security -> Phase 5
-- Testcontainers, coverage -> Phase 6
-
-## ADR
-Xem `docs/adr/0001-hexagonal-architecture.md` lam mau. Tu Phase 2 tro di, moi phase nen co 1 ADR moi ghi lai quyet dinh + trade-off.
+| Lenh | Khi nao |
+|---|---|
+| `/bat-dau` | Dau buoi: tom tat tien do, on nhanh, chot muc tieu buoi |
+| `/goi-y` | Khi bi: goi y theo bac (cau hoi -> khai niem -> hint -> snippet). `/goi-y 3` de nhay bac |
+| `/ket-thuc` | Cuoi buoi: soan journal, cap nhat tien do, commit + push |
+| `/kiem-tra` | Cuoi phase: phong van thu, cham `docs/competencies.md` |
