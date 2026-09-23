@@ -1,0 +1,11 @@
+# Chuan hoa xuong dong: luu LF trong repo va ca working tree, bat ke may Windows/Linux
+* text=auto eol=lf
+
+# Script Windows bat buoc CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# File nhi phan - khong dong vao
+*.jar binary
+*.png binary
+*.jpg binary
