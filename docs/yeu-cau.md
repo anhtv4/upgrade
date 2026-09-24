@@ -31,7 +31,8 @@ Chung toi la **mot salon** (cat toc, goi dau, massage, cham soc da), khoang **10
 **Thanh toan va vong doi lich**
 - F7. Khach phai **thanh toan truoc** thi lich moi duoc xac nhan. Chua tra tien thi lich o trang thai cho.
 - F8. Qua **15 phut** ke tu khi dat ma chua thanh toan thi lich tu huy, slot duoc tra lai.
-- F9. Khach huy duoc lich cua minh (truoc khi thanh toan, hoac sau khi da xac nhan). Quan ly huy duoc moi lich.
+- F9. Khach huy duoc lich cua minh (truoc khi thanh toan, hoac sau khi da xac nhan). Quan ly huy duoc moi lich, bat cu luc nao. Nhan vien khong duoc huy lich.
+  - Lich da thanh toan, khach huy **truoc gio hen it nhat 1 tieng** -> duoc hoan tien. Huy sat hon 1 tieng -> van huy duoc nhung **khong hoan tien**. Quan ly huy lich da thanh toan -> **luon hoan tien** (chot 2026-09-24).
 - F10. Lam xong dich vu, nhan vien danh dau **hoan thanh**. Lich da hoan thanh hoac da huy thi khong doi duoc nua.
 
 **Thong bao**
@@ -50,7 +51,7 @@ Chung toi la **mot salon** (cat toc, goi dau, massage, cham soc da), khoang **10
 - N2. Mang cham, khach bam "Dat" 2 lan hoac app tu gui lai -> chi tao **1** lich.
 - N3. Danh sach dich vu va khung gio trong duoc xem rat nhieu, it thay doi -> phai nhanh.
 - N4. Sap co app mobile va co the co doi tac goi API -> API on dinh, co tai lieu, doi API khong lam vo client cu.
-- N5. Chan bot/spam dat lich hang loat.
+- N5. Chan bot/spam dat lich hang loat. VD: 1 khach giu slot 3 lan lien tiep trong 1 tieng ma khong thanh toan -> chan dat lich 1 ngay va bao cho khach (chot 2026-09-24).
 - N6. Chu salon muon biet he thong co dang loi khong, so lich moi ngay.
 - N7. Khach chi thay du lieu cua minh; thong tin dang nhap phai an toan.
 

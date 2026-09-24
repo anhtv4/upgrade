@@ -53,6 +53,9 @@ Yeu cau day du theo giong khach hang + map sang phase: `docs/yeu-cau.md`.
 - **Thanh toan:** bat buoc truoc khi CONFIRMED. Vong doi: PENDING -> AWAITING_PAYMENT -> CONFIRMED -> COMPLETED, CANCELLED nhanh ra tu nhieu diem. Truoc khi co phase payment, "da thanh toan" chi mo phong bang method/domain event (VD `Booking.markPaymentReceived()`), khong tich hop cong thanh toan.
 - **Trung lich** phai tinh theo provider (2 khach khac nhau khong duoc dat trung gio cung 1 provider). Phase 1 duoc phep check theo `customerId` (nhu skeleton) vi chua co khai niem provider - sua o Phase 2.
 - **Kenh dat lich:** chi khach tu dat qua web/app/API. Nhan vien/quan ly dat ho (khach goi dien, den truc tiep) nam ngoai pham vi (chot 2026-09-24).
+- **Huy va hoan tien (F9):** khach huy lich da thanh toan truoc gio hen >= 1 tieng -> hoan tien, sat hon -> khong hoan. Quan ly huy -> luon hoan tien. Nhan vien khong duoc huy (chot 2026-09-24).
+- **Chong spam (N5):** giu slot 3 lan lien tiep trong 1 tieng khong thanh toan -> chan dat lich 1 ngay (chot 2026-09-24).
+- **Dang nhap:** khach va nhan vien deu co tai khoan, cung quy tac bao mat. Du lieu dang nhap tach khoi ho so nhan vien/khach (chot 2026-09-24).
 - User, Service Catalog, Payment, Notification van toi gian (chi la ID/string tho, chua co aggregate rieng) cho den khi phase tuong ung can.
 
 ## Stack va lenh

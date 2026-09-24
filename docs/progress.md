@@ -2,13 +2,13 @@
 
 > File nay duoc nap tu dong vao moi phien (qua `CLAUDE.md`). Giu NGAN GON - chi trang thai hien tai. Lich su chi tiet nam o `docs/journal/`.
 
-Cap nhat lan cuoi: 2026-09-24 (buoi 2)
+Cap nhat lan cuoi: 2026-09-24 (buoi 3)
 
 ## Hien tai
 
 - **Phase:** 1 - Nen tang & kien truc (bat dau 2026-09-23, du kien ~2 tuan)
 - **Buoc dang lam:** 3 - Tai lieu bounded context
-- **Buoc tiep theo (cu the):** Trong `docs/bounded-contexts.md`, sua muc "Tra loi cau hoi (Ai sua, vi sao)" theo review 2026-09-24 buoi 2: (a) Booking du tac nhan theo F7-F10 + dong "vi sao"; (b) bo hoac cu the hoa "He thong" bang su kien nghiep vu; (c) tach cac ly do sua trong Provider (nhan su / thong tin ca nhan / dang nhap); (d) them Payment. Tra loi: doi password NV va khach co cung ly do? Payment co cung ly do thay doi voi Booking? Roi gom thanh nhom context va dien Lam / KHONG lam / So huu / Can tu context khac. Bang "Tham chieu" de buoi sau.
+- **Buoc tiep theo (cu the):** Trong `docs/bounded-contexts.md`: (1) doc lai phan Provider/Account (Claude viet theo loi nguoi lam buoi 3), sua bang cach dien dat cua minh; (2) tra loi `role` thuoc Provider hay Account; (3) them dong "vi sao" cho Booking; (4) lam Payment: Payment co cung ly do thay doi voi Booking khong, ai quyet dinh so tien hoan (phu thuoc ai huy + huy luc nao, xem F9). Sau do gom nhom context va dien Lam / KHONG lam / So huu / Can tu context khac.
 
 ## Checklist Phase 1
 
@@ -27,16 +27,17 @@ Cap nhat lan cuoi: 2026-09-24 (buoi 2)
 
 ## Cau hoi / quyet dinh dang treo
 
-- Payment: context rieng hay gop vao Booking? "Hoan tien" co dua vao yeu cau khong?
-- Du lieu dang nhap (username/password/role): tach khoi nhan vien/khach khong?
+- Payment: context rieng hay gop vao Booking? Ai quyet dinh so tien hoan? (hoan tien da chot vao F9)
+- `role` (staff/manager): thuoc Provider hay Account?
+- F16 (ai tao/sua/huy lich, luc nao) nam o dau khi Log khong phai context?
 - F4 (ca lam, ngay nghi): giu o Phase 2 hay dua vao "Chua can"? (de xuat trong `yeu-cau.md`, roadmap chua ghi)
-- Shift + Calender: gop 1? Gan Provider hay la vung rieng ("nhan vien ranh luc nao")? Log co phai context?
+- Shift + Calender: gop 1? Gan Provider hay la vung rieng ("nhan vien ranh luc nao")?
 
 ## Diem yeu dang theo doi
 
 Quan sat qua nhieu buoi (Claude cap nhat khi thay lap lai). Dung de chon trong tam goi y va cau hoi kiem tra.
 
-- Thiet ke bat dau tu bang DB thay vi tu trach nhiem/hanh vi: coi moi bang la 1 context, gom theo danh tu ("deu la nguoi" -> User). Nguoi lam tu nhan "hieu sai y nghia context". Bang chung: [2026-09-24](journal/2026-09-24.md), [2026-09-24 buoi 2](journal/2026-09-24-2.md) (van ghi "Thong tin X", dung "He thong sua" thay cho su kien nghiep vu).
+- Thiet ke bat dau tu bang DB thay vi tu trach nhiem/hanh vi: coi moi bang la 1 context, gom theo danh tu ("deu la nguoi" -> User). Nguoi lam tu nhan "hieu sai y nghia context". Bang chung: [2026-09-24](journal/2026-09-24.md), [2026-09-24 buoi 2](journal/2026-09-24-2.md) (van ghi "Thong tin X", dung "He thong sua" thay cho su kien nghiep vu), [2026-09-24 buoi 3](journal/2026-09-24-3.md) ("dung chung 1 bang account", them gia tri `locked` vao cung field `status` thay vi nhan ra 2 trach nhiem doc lap). Tien bo: da dung su kien nghiep vu cho Notification, tu ket luan duoc tach dang nhap.
 
 ## Nhat ky cac buoi
 
@@ -44,3 +45,4 @@ Quan sat qua nhieu buoi (Claude cap nhat khi thay lap lai). Dung de chon trong t
 - 2026-09-23 - [Doi default branch GitHub sang main](journal/2026-09-23-2.md)
 - 2026-09-24 - [Yeu cau khach hang va ban nhap bounded context](journal/2026-09-24.md)
 - 2026-09-24 - [Y nghia bounded context, tra loi "ai sua, vi sao sua"](journal/2026-09-24-2.md)
+- 2026-09-24 - [Tach Account khoi Provider, chot huy/hoan tien](journal/2026-09-24-3.md)
