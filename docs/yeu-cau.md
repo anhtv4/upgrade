@@ -56,7 +56,7 @@ Chung toi la **mot salon** (cat toc, goi dau, massage, cham soc da), khoang **10
 
 ## Chua can (ngoai pham vi)
 
-Nhieu chi nhanh, chon phong/giuong, 1 lich nhieu dich vu, doi gio lich da dat, khuyen mai/tich diem, tich hop cong thanh toan that (chi mo phong "da thanh toan").
+Nhieu chi nhanh, chon phong/giuong, 1 lich nhieu dich vu, doi gio lich da dat, khuyen mai/tich diem, tich hop cong thanh toan that (chi mo phong "da thanh toan"), nhan vien/quan ly dat ho khach goi dien hoac den truc tiep (chot 2026-09-24: chi khach tu dat qua web/app/API).
 
 ## Map yeu cau -> phase
 

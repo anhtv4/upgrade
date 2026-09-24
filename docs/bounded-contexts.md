@@ -28,6 +28,32 @@
 
 Đây là thiết kế của tôi, có thể chính tả ngữ pháp chưa chuẩn
 
+## Trả lời câu hỏi (Ai sửa, vì sao):
+- Service Catalog:
+  - Ai sửa: Quản lý
+  - Thay đổi vì: Salon thay đổi danh mục, giá dịch vụ
+- Provider:
+  - Hệ thống, quản lý, nhân viên
+  - Thay đổi nhân viên, mới vào hoặc nghỉ làm. Nhân viên tự cập nhật thông tin
+- Customer:
+  - Hệ thống, khách hàng
+  - Khách hàng đăng ký tài khoản hoặc update thông tin
+- Shift: 
+  - Quản lý, hệ thống
+  - Thay đổi thông tin ca làm
+- Calender:
+  - Quản lý
+  - Thay đổi thông tin trực các ca, nhân viên nghỉ trực hoặc đổi ca
+- Booking:
+  - Khách hàng: Đặt lịch, hủy lịch
+  - Quản lý: hủy lịch
+- Notifycation:
+  - Hệ thống
+  - Gửi thông tin thông báo cho khách hàng
+- Log:
+  - Hệ thống
+  - Theo dõi thay đổi của các thao tác
+
 ## Quan he giua cac context
 
 ### Tham chieu bang ID hay object / copy du lieu
