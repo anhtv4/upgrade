@@ -2,13 +2,13 @@
 
 > File nay duoc nap tu dong vao moi phien (qua `CLAUDE.md`). Giu NGAN GON - chi trang thai hien tai. Lich su chi tiet nam o `docs/journal/`.
 
-Cap nhat lan cuoi: 2026-09-23
+Cap nhat lan cuoi: 2026-09-24
 
 ## Hien tai
 
 - **Phase:** 1 - Nen tang & kien truc (bat dau 2026-09-23, du kien ~2 tuan)
 - **Buoc dang lam:** 3 - Tai lieu bounded context
-- **Buoc tiep theo (cu the):** Tao `docs/bounded-contexts.md`, lam lan luot: (1) moi context so huu du lieu gi - bat dau bang cau hoi "Provider thuoc context nao - Booking hay context rieng? Tai sao?"; (2) tham chieu bang ID hay object; (3) giao tiep dong bo hay event. Het gio sau (2) thi de (3) buoi sau.
+- **Buoc tiep theo (cu the):** Trong `docs/bounded-contexts.md` (da co ban nhap dang ERD), gom 8 bang thanh cac context theo tieu chi "ai sua, vi sao sua" (VD Provider/Shift/Calender co cung 1 context?; Log la xuyen suot, khong phai context). Dien lai Lam / KHONG lam / So huu / Can tu context khac cho tung context, dat danh sach cot vao trong context. Roi dien bang "Tham chieu" (phan 2). Phan (3) event de sau. Nghiep vu goc: `docs/yeu-cau.md`.
 
 ## Checklist Phase 1
 
@@ -27,15 +27,18 @@ Cap nhat lan cuoi: 2026-09-23
 
 ## Cau hoi / quyet dinh dang treo
 
-- (chua co)
+- Payment: context rieng hay gop vao Booking? "Hoan tien" co dua vao yeu cau khong?
+- Du lieu dang nhap (username/password/role): tach khoi nhan vien/khach khong?
+- F4 (ca lam, ngay nghi): giu o Phase 2 hay dua vao "Chua can"? (de xuat trong `yeu-cau.md`, roadmap chua ghi)
 
 ## Diem yeu dang theo doi
 
 Quan sat qua nhieu buoi (Claude cap nhat khi thay lap lai). Dung de chon trong tam goi y va cau hoi kiem tra.
 
-- (chua co du lieu - moi bat dau)
+- Thiet ke bat dau tu bang DB thay vi tu trach nhiem/hanh vi: coi moi bang la 1 context, gom theo danh tu ("deu la nguoi" -> User). Nguoi lam tu nhan "hieu sai y nghia context". Bang chung: [2026-09-24](journal/2026-09-24.md).
 
 ## Nhat ky cac buoi
 
 - 2026-09-23 - [Setup du an va he thong theo doi](journal/2026-09-23.md)
 - 2026-09-23 - [Doi default branch GitHub sang main](journal/2026-09-23-2.md)
+- 2026-09-24 - [Yeu cau khach hang va ban nhap bounded context](journal/2026-09-24.md)

@@ -46,6 +46,8 @@ Tien do hien tai:
 
 ## Nghiep vu (da chot)
 
+Yeu cau day du theo giong khach hang + map sang phase: `docs/yeu-cau.md`.
+
 - **Loai hinh:** salon/spa (cat toc, goi dau, massage...). 1 provider phuc vu 1 khach trong suot slot. Co y KHONG chon phong kham (qua gan nghe HIS, lai keo theo nhieu tai nguyen cung luc).
 - **Provider:** nhan vien cua MOT cua hang duy nhat - KHONG multi-tenant. Multi-tenant la bai toan ha tang, nguoi lam da quen tu HIS; neu co thi la bai tap rieng, khong gan vao lo trinh chinh.
 - **Thanh toan:** bat buoc truoc khi CONFIRMED. Vong doi: PENDING -> AWAITING_PAYMENT -> CONFIRMED -> COMPLETED, CANCELLED nhanh ra tu nhieu diem. Truoc khi co phase payment, "da thanh toan" chi mo phong bang method/domain event (VD `Booking.markPaymentReceived()`), khong tich hop cong thanh toan.
