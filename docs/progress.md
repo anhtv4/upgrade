@@ -2,13 +2,13 @@
 
 > File nay duoc nap tu dong vao moi phien (qua `CLAUDE.md`). Giu NGAN GON - chi trang thai hien tai. Lich su chi tiet nam o `docs/journal/`.
 
-Cap nhat lan cuoi: 2026-09-24 (buoi 3)
+Cap nhat lan cuoi: 2026-09-28
 
 ## Hien tai
 
 - **Phase:** 1 - Nen tang & kien truc (bat dau 2026-09-23, du kien ~2 tuan)
 - **Buoc dang lam:** 3 - Tai lieu bounded context
-- **Buoc tiep theo (cu the):** Trong `docs/bounded-contexts.md`: (1) doc lai phan Provider/Account (Claude viet theo loi nguoi lam buoi 3), sua bang cach dien dat cua minh; (2) tra loi `role` thuoc Provider hay Account; (3) them dong "vi sao" cho Booking; (4) lam Payment: Payment co cung ly do thay doi voi Booking khong, ai quyet dinh so tien hoan (phu thuoc ai huy + huy luc nao, xem F9). Sau do gom nhom context va dien Lam / KHONG lam / So huu / Can tu context khac.
+- **Buoc tiep theo (cu the):** Trong `docs/bounded-contexts.md`: (1) doc lai phan Payment (Claude viet theo lua chon trac nghiem buoi 2026-09-28), dien dat lai bang loi cua minh; (2) dien bang "Tham chieu bang ID hay copy" - bat dau tu: Booking can gia dich vu tu Service Catalog, giu ID hay copy gia tai thoi diem dat? (quan ly doi gia sau khi khach da dat thi sao?); (3) gom nhom context (Shift + Calender) roi dong buoc 3.
 
 ## Checklist Phase 1
 
@@ -27,9 +27,7 @@ Cap nhat lan cuoi: 2026-09-24 (buoi 3)
 
 ## Cau hoi / quyet dinh dang treo
 
-- Payment: context rieng hay gop vao Booking? Ai quyet dinh so tien hoan? (hoan tien da chot vao F9)
-- `role` (staff/manager): thuoc Provider hay Account?
-- F16 (ai tao/sua/huy lich, luc nao) nam o dau khi Log khong phai context?
+- F16 (ai tao/sua/huy lich, luc nao) nam o dau khi Log khong phai context? "Ai thao tac" (khac `ID provider` = tho phuc vu) dinh danh bang ID Account, Provider hay Customer?
 - F4 (ca lam, ngay nghi): giu o Phase 2 hay dua vao "Chua can"? (de xuat trong `yeu-cau.md`, roadmap chua ghi)
 - Shift + Calender: gop 1? Gan Provider hay la vung rieng ("nhan vien ranh luc nao")?
 
@@ -37,7 +35,7 @@ Cap nhat lan cuoi: 2026-09-24 (buoi 3)
 
 Quan sat qua nhieu buoi (Claude cap nhat khi thay lap lai). Dung de chon trong tam goi y va cau hoi kiem tra.
 
-- Thiet ke bat dau tu bang DB thay vi tu trach nhiem/hanh vi: coi moi bang la 1 context, gom theo danh tu ("deu la nguoi" -> User). Nguoi lam tu nhan "hieu sai y nghia context". Bang chung: [2026-09-24](journal/2026-09-24.md), [2026-09-24 buoi 2](journal/2026-09-24-2.md) (van ghi "Thong tin X", dung "He thong sua" thay cho su kien nghiep vu), [2026-09-24 buoi 3](journal/2026-09-24-3.md) ("dung chung 1 bang account", them gia tri `locked` vao cung field `status` thay vi nhan ra 2 trach nhiem doc lap). Tien bo: da dung su kien nghiep vu cho Notification, tu ket luan duoc tach dang nhap.
+- Thiet ke bat dau tu bang DB thay vi tu trach nhiem/hanh vi: coi moi bang la 1 context, gom theo danh tu ("deu la nguoi" -> User). Nguoi lam tu nhan "hieu sai y nghia context". Bang chung: [2026-09-24](journal/2026-09-24.md), [2026-09-24 buoi 2](journal/2026-09-24-2.md) (van ghi "Thong tin X", dung "He thong sua" thay cho su kien nghiep vu), [2026-09-24 buoi 3](journal/2026-09-24-3.md) ("dung chung 1 bang account", them gia tri `locked` vao cung field `status` thay vi nhan ra 2 trach nhiem doc lap), [2026-09-28](journal/2026-09-28.md) (gop "doi mat khau + doi so dien thoai" vi deu la "thay doi thong tin"; "lien quan tien -> Payment" du quy tac huy can du lieu cua Booking; "Lam gi: luu thong tin nhan vien"). Tien bo: da dung su kien nghiep vu cho Notification, tu ket luan duoc tach dang nhap; 2026-09-28 tu dua lap luan dung cho `role` sau cau hoi dan dat, nhan ra "khong hoan -> khong co giao dich -> Payment khong luu". Nguoi lam tu nhan (2026-09-28): quen "danh gia no la gi roi thiet ke DB", nen bi roi.
 
 ## Nhat ky cac buoi
 
@@ -46,3 +44,4 @@ Quan sat qua nhieu buoi (Claude cap nhat khi thay lap lai). Dung de chon trong t
 - 2026-09-24 - [Yeu cau khach hang va ban nhap bounded context](journal/2026-09-24.md)
 - 2026-09-24 - [Y nghia bounded context, tra loi "ai sua, vi sao sua"](journal/2026-09-24-2.md)
 - 2026-09-24 - [Tach Account khoi Provider, chot huy/hoan tien](journal/2026-09-24-3.md)
+- 2026-09-28 - [Chot role o Account, tach Payment khoi Booking](journal/2026-09-28.md)
