@@ -18,14 +18,14 @@
 
 
 ## Design:
-- Service Catalog: ID, name, duration, price
+- Service Catalog: ID, name, duration, price, status (đang bán, ngừng bán - xóa mềm vì Booking giữ ID dịch vụ)
 - Provider: ID, ID account, fullname, phone number, status (đang làm, đã nghỉ)
 - Account: ID, username, password, status (bình thường, khóa tạm, vô hiệu), role
 - Customer: ID, ID account, fullname, phone, mail, status, notify-chanel (cấu hình nhận thông báo, 1 = phone, 2 = mail, 0 = không nhận)
 - Shift: ID, time start, time end, name
-- Calender: ID, ID shift, ID provider, status (on-word, dayoff), because (ý là lý do nghỉ chẳng hạn)
-- Booking: ID, ID provider, ID customer, time start, time end, price, status (giữ slot/chờ thanh toán, đã xác nhận, đã hoàn thành (dịch vụ), đã hủy), số tiền được hoàn (quyết định của Booking khi hủy), cause
-- Notification: ID, ID customer, context, status (not send, sended, fail), note
+- Calender: ID, ID shift, ID provider, time start, time end (copy từ Shift lúc xếp lịch), status (on-word, dayoff), because (ý là lý do nghỉ chẳng hạn)
+- Booking: ID, ID provider, ID customer, ID service catalog, time start, time end (= time start + duration copy lúc đặt), price (copy lúc đặt), status (giữ slot/chờ thanh toán, đã xác nhận, đã hoàn thành (dịch vụ), đã hủy), số tiền được hoàn (quyết định của Booking khi hủy), cause
+- Notification: ID, ID customer, gửi tới (sđt/mail copy lúc gửi), context (nội dung, copy từ Booking lúc gửi), status (not send, sended, fail), note
 - Payment: ID, ID booking, loại (thu / hoàn), số tiền, mã giao dịch cổng, status (đang xử lý, thành công, thất bại)
 
 Đây là thiết kế của tôi, có thể chính tả ngữ pháp chưa chuẩn
@@ -78,12 +78,20 @@
   - Hệ thống
   - Gửi thông tin thông báo cho khách hàng khi 1 trạng thái mới được ghi nhận.
 - Payment:
-
-| Sự kiện          | Ai kích hoạt                                        | Quy tắc                                                                 | Quy tắc đổi khi nào (lý do) |
-|------------------|-----------------------------------------------------|-------------------------------------------------------------------------|-----------------------------|
-| Khách trả tiền   | Khách, sau khi giữ slot, trong vòng 15 phút         | Trả đủ tiền dịch vụ -> lịch chuyển "đã xác nhận" (F7)                   | Đổi cổng/phương thức thanh toán -> Payment. Đổi thời gian giữ slot -> Booking |
-| Hoàn tiền        | Khách hủy trước giờ hẹn >= 1 tiếng, hoặc quản lý hủy | Booking quyết định số tiền hoàn, Payment thực hiện giao dịch hoàn      | Đổi chính sách (1h -> 2h, hoàn 1 phần) -> Booking. Đổi cách thực hiện (cổng, thử lại) -> Payment |
-| Không hoàn tiền  | Khách hủy trước giờ hẹn < 1 tiếng                   | Không có giao dịch -> Payment không ghi gì                              | Đổi chính sách -> Booking. Payment không liên quan |
+  - Bằng lời của tôi:
+    1. 
+      - đổi cổng vnpay -> momo: sửa payment, booking không phải đụng
+      - đổi chính sách hủy 1h -> 2h: sửa booking, không sửa payment
+      - hai thay đổi này không xảy ra cùng lúc -> tách
+    2. Booking giữ lại trạng thái của đơn khi hoàn tiền (đã hủy) và quyết định hoàn bao nhiêu. Còn payment giữ trạng thái hoàn tiền (thành công, thất bại)
+      - booking tính ra con số 200k, nằm ở booking. tính được 200k dựa trên giá tiền đã chốt khi đặt và thời gian hủy lịch so với giờ hẹn
+    3. chưa hiểu: ...
+  
+| Sự kiện          | Ai kích hoạt                                        | Quy tắc                                                           | Quy tắc đổi khi nào (lý do)                                                                      |
+|------------------|-----------------------------------------------------|-------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
+| Khách trả tiền   | Khách sau khi giữ slot, trong vòng 15 phút          | Trả đủ tiền dịch vụ -> lịch chuyển "đã xác nhận" (F7)             | Đổi cổng/phương thức thanh toán -> Payment. Đổi thời gian giữ slot -> Booking                    |
+| Hoàn tiền        | Khách hủy trước giờ hẹn >= 1 tiếng, hoặc quản lý hủy | Booking quyết định số tiền hoàn, Payment thực hiện giao dịch hoàn | Đổi chính sách (1h -> 2h, hoàn 1 phần) -> Booking. Đổi cách thực hiện (cổng, thử lại) -> Payment |
+| Không hoàn tiền  | Khách hủy trước giờ hẹn < 1 tiếng                   | Không có giao dịch -> Payment không ghi gì                        | Đổi chính sách -> Booking. Payment không liên quan                                               |
 
   - Ghi chú:
     - Quyết định vs thực hiện: Booking quyết định có hoàn không, hoàn bao nhiêu (vì Booking nắm giờ hẹn + ai hủy). Payment thực hiện và giữ trạng thái giao dịch. VD cổng từ chối hoàn -> Booking vẫn đúng (đã hủy, được hoàn X), Payment ghi "thất bại" để xử lý tiếp.
@@ -97,9 +105,31 @@
 
 ### Tham chieu bang ID hay object / copy du lieu
 
-| Context dung | Can gi | Tu context | Cach giu (ID / copy tai thoi diem ...) | Ly do |
-|-----------|---|---|---|---|
-|           | | | | |
+**Câu hỏi quyết định:** sau khi sự kiện xảy ra (đặt lịch, xếp lịch, gửi thông báo, giao dịch), nếu dữ liệu gốc bị sửa thì muốn thấy giá trị **mới nhất** hay giá trị **đúng như lúc xảy ra**?
+- Muốn giá trị mới nhất -> giữ **ID**, cần thì hỏi context gốc.
+- Muốn giá trị như lúc xảy ra -> **copy** vào context của mình, tại đúng thời điểm đó (phải ghi rõ "lúc nào").
+
+**Quy tắc chung rút ra:**
+1. **ID + copy thường đi cùng nhau:** giữ ID để biết "là cái nào", copy để giữ "giá trị lúc đó". VD Booking giữ ID dịch vụ + copy giá, thời lượng.
+2. **Giữ ID thì context gốc chỉ được xóa mềm:** Service Catalog -> "ngừng bán", Provider -> "đã nghỉ", Account -> "vô hiệu". Xóa cứng thì dữ liệu cũ trỏ vào ID không còn tồn tại.
+
+| Context dùng | Cần gì | Từ context | Cách giữ | Lý do (tình huống) |
+|---|---|---|---|---|
+| Booking | dịch vụ nào (tên) | Service Catalog | ID | Hiển thị thông tin dịch vụ hiện tại. Dịch vụ ngừng bán thì xóa mềm, lịch cũ vẫn hiển thị được |
+| Booking | giá | Service Catalog | copy lúc đặt | Khách đã trả 100k, quản lý tăng giá lên 150k -> lịch đã đặt vẫn là 100k. Số tiền hoàn khi hủy cũng tính trên giá này |
+| Booking | thời lượng | Service Catalog | copy lúc đặt (thành `time end`) | Đổi gội đầu 30 -> 45 phút không được kéo dài các lịch đã đặt |
+| Booking | khách | Customer | ID | Khách đổi SĐT sau khi đặt -> nhân viên cần gọi số mới |
+| Booking | thợ phục vụ | Provider | ID | Thợ đổi tên/SĐT -> hiển thị mới. Thợ nghỉ thì "đã nghỉ", không xóa |
+| Calender | ca nào | Shift | ID | Biết lịch trực thuộc ca nào |
+| Calender | giờ bắt đầu/kết thúc ca | Shift | copy lúc xếp lịch | Ca sáng đổi 8h-12h -> 9h-13h: lịch trực tháng trước vẫn phải là 8h-12h |
+| Calender | nhân viên trực | Provider | ID | Thông tin nhân viên luôn lấy bản mới nhất |
+| Notification | khách nào | Customer | ID | Lúc gửi mới hỏi Customer lấy SĐT/mail hiện tại |
+| Notification | SĐT/mail đã gửi tới | Customer | copy lúc gửi | Copy lúc đặt lịch thì tin nhắc đi tới số cũ nếu khách vừa đổi. Copy lúc gửi để lịch sử biết tin đã đến đâu |
+| Notification | nội dung (giờ hẹn, dịch vụ) | Booking | copy lúc gửi | Thông báo là bằng chứng đã báo gì cho khách lúc đó. Lịch thay đổi sau thì lịch sử vẫn đúng nội dung khách đã nhận |
+| Payment | lịch nào | Booking | ID | Biết giao dịch thuộc lượt đặt nào |
+| Payment | số tiền | Booking | copy lúc tạo giao dịch | Booking giữ *quyết định* (được hoàn X), Payment giữ *giao dịch thực tế* (đã gửi X sang cổng, mã GD). Đối soát cuối tháng với cổng là so với cái Payment đã gửi đi |
+| Provider | tài khoản đăng nhập | Account | ID | Chỉ cần biết tài khoản nào của nhân viên nào. Đổi mật khẩu, khóa tài khoản không liên quan Provider |
+| Customer | tài khoản đăng nhập | Account | ID | Tương tự Provider |
 
 ### Giao tiep dong bo hay event
 
