@@ -41,7 +41,11 @@ Chung toi la **mot salon** (cat toc, goi dau, massage, cham soc da), khoang **10
 
 **Quan ly**
 - F13. Quan ly them/sua/ngung dich vu va gia.
-- F14. Quan ly them/sua nhan vien, ca lam, ngay nghi.
+- F14. Quan ly them/sua nhan vien, ca lam, ngay nghi. (chot 2026-10-02, Claude dong vai khach hang)
+  - Ca lam (VD ca sang 8h-12h) la danh muc mau. Quan ly xep lich truc **theo thang**, xep truoc cho thang sau.
+  - Sua gio ca chi ap dung cho cac lan xep lich **sau do**. Lich truc da xep giu nguyen gio cu.
+  - Can doi gap trong thang -> quan ly sua truc tiep lich truc tung ngay (nhu doi ca, cho nghi).
+  - Sua lich truc (nghi, doi ca, doi gio) ma lam 1 lich hen da dat cua khach nam ngoai gio truc -> **chan**, quan ly phai huy cac lich hen do truoc (quan ly huy -> luon hoan tien, F9).
 - F15. Quan ly tim lich theo ngay, nhan vien, khach, trang thai.
 - F16. Biet **ai** tao/sua/huy 1 lich va **luc nao**.
 

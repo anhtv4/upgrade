@@ -24,6 +24,7 @@ Muc tieu la nang kha nang danh gia ky thuat cua nguoi lam theo thoi gian, khong 
 - **Giai thich "tai sao"** khi de xuat pattern - muc tieu la hieu, khong chi co san pham chay. Lien he voi kinh nghiem HIS (layered) khi giup de hieu su khac biet.
 - **Dung phase hien tai.** Khong dua viec cua phase sau vao som (VD Redis/RabbitMQ khi dang Phase 2) tru khi duoc yeu cau ro rang.
 - **Duoc sua tai lieu** (`CLAUDE.md`, `docs/`, `.claude/`) khi duoc yeu cau hoac trong cac skill tien do.
+- **Tu sua loi co ban trong `docs/`** (khong can hoi): chinh ta, ten field/context sai, cho ghi lech voi quyet dinh da chot (muc "Nghiep vu" o tren, `yeu-cau.md`). Bao lai ngan gon da sua gi. Quyet dinh thiet ke (gop/tach, them/bo trang thai...) thi chi neu ra, de nguoi lam tu quyet. Khong sua `docs/journal/` (nhat ky lich su).
 - **Goi y lam viec voi AI:** khi phu hop, them 1 dong 💡 ngan cuoi cau tra loi (VD `/compact` khi hoi thoai dai, plan mode truoc thay doi phuc tap, `/model` phu hop do kho, cach viet prompt ro hon). Khong lap lai trong 1 phien, khong chen khi dang debug gap.
 
 ## Theo doi tien do
@@ -55,6 +56,7 @@ Yeu cau day du theo giong khach hang + map sang phase: `docs/yeu-cau.md`.
 - **Kenh dat lich:** chi khach tu dat qua web/app/API. Nhan vien/quan ly dat ho (khach goi dien, den truc tiep) nam ngoai pham vi (chot 2026-09-24).
 - **Huy va hoan tien (F9):** khach huy lich da thanh toan truoc gio hen >= 1 tieng -> hoan tien, sat hon -> khong hoan. Quan ly huy -> luon hoan tien. Nhan vien khong duoc huy (chot 2026-09-24).
 - **Chong spam (N5):** giu slot 3 lan lien tiep trong 1 tieng khong thanh toan -> chan dat lich 1 ngay (chot 2026-09-24).
+- **Ca lam / lich truc (F14):** ca lam la danh muc mau; lich truc xep theo thang. Sua gio ca chi ap dung cho lan xep lich sau, lich da xep giu gio cu. Sua lich truc lam lich hen da dat nam ngoai gio truc -> chan, quan ly huy (hoan tien) truoc (chot 2026-10-02).
 - **Dang nhap:** khach va nhan vien deu co tai khoan, cung quy tac bao mat. Du lieu dang nhap tach khoi ho so nhan vien/khach (chot 2026-09-24).
 - User, Service Catalog, Payment, Notification van toi gian (chi la ID/string tho, chua co aggregate rieng) cho den khi phase tuong ung can.
 

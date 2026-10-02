@@ -12,8 +12,7 @@
 | Booking         | Chứa thông tin đặt lịch                              |
 | Customer        | Thông tin khách                                      |
 | Notification    | Thông tin thông báo                                  |
-| Shift           | Thông tin ca trực (danh mục)                         |
-| Calender        | Lịch trực của nhân viên                              |
+| WorkSchedule    | Trả lời "nhân viên nào làm lúc nào": ca làm mẫu + lịch trực từng ngày, nghỉ, đổi ca |
 | Payment         | Thực hiện giao dịch thu/hoàn tiền và theo dõi kết quả giao dịch |
 
 
@@ -21,11 +20,12 @@
 - Service Catalog: ID, name, duration, price, status (đang bán, ngừng bán - xóa mềm vì Booking giữ ID dịch vụ)
 - Provider: ID, ID account, fullname, phone number, status (đang làm, đã nghỉ)
 - Account: ID, username, password, status (bình thường, khóa tạm, vô hiệu), role
-- Customer: ID, ID account, fullname, phone, mail, status, notify-chanel (cấu hình nhận thông báo, 1 = phone, 2 = mail, 0 = không nhận)
-- Shift: ID, time start, time end, name
-- Calender: ID, ID shift, ID provider, time start, time end (copy từ Shift lúc xếp lịch), status (on-word, dayoff), because (ý là lý do nghỉ chẳng hạn)
-- Booking: ID, ID provider, ID customer, ID service catalog, time start, time end (= time start + duration copy lúc đặt), price (copy lúc đặt), status (giữ slot/chờ thanh toán, đã xác nhận, đã hoàn thành (dịch vụ), đã hủy), số tiền được hoàn (quyết định của Booking khi hủy), cause
-- Notification: ID, ID customer, gửi tới (sđt/mail copy lúc gửi), context (nội dung, copy từ Booking lúc gửi), status (not send, sended, fail), note
+- Customer: ID, ID account, fullname, phone, mail, status, notify-channel (cấu hình nhận thông báo, 1 = phone, 2 = mail, 0 = không nhận)
+- WorkSchedule (1 context, 2 bảng):
+  - Shift (ca làm mẫu, danh mục): ID, name, time start, time end (chỉ giờ trong ngày)
+  - ScheduleEntry (lịch trực, 1 nhân viên - 1 ca - 1 ngày): ID, ID shift, ID provider, time start, time end (datetime = ngày trực + giờ ca copy từ Shift lúc xếp lịch), status (on-work, day-off), reason (lý do nghỉ)
+- Booking: ID, ID provider, ID customer, ID service catalog, service name (copy lúc đặt), time start, time end (= time start + duration copy lúc đặt), price (copy lúc đặt), status (giữ slot/chờ thanh toán, đã xác nhận, đã hoàn thành (dịch vụ), đã hủy), số tiền được hoàn (quyết định của Booking khi hủy), cancel reason (lý do hủy)
+- Notification: ID, ID customer, gửi tới (sđt/mail copy lúc gửi), content (nội dung, copy từ Booking lúc gửi), status (not-sent, sent, failed), note
 - Payment: ID, ID booking, loại (thu / hoàn), số tiền, mã giao dịch cổng, status (đang xử lý, thành công, thất bại)
 
 Đây là thiết kế của tôi, có thể chính tả ngữ pháp chưa chuẩn
@@ -38,9 +38,9 @@
   - Quản lý: tuyển nhân viên mới (tạo hồ sơ), cho nghỉ việc (chuyển "đã nghỉ", KHÔNG xóa vì lịch cũ vẫn tham chiếu)
   - Nhân viên: tự cập nhật tên, số điện thoại
   - Làm gì: Nhân viên này còn nhận khách được không. Nơi định danh 'ai' tương tác với các context khác như ai nghỉ, ai đang làm 
-  ở lịch trưc, ai là người phụ trách ca đó. Ai là người đã đánh hoàn thành ở trạng thái đặt lịch
+  ở lịch trực, ai là người phụ trách ca đó. Ai là người đã đánh hoàn thành ở trạng thái đặt lịch
   - Không làm: không liên quan tới thanh toán, lịch nghỉ
-  - Tham chiếu: Booking, Calendar dùng ID của Provider. Provider dùng ID của Account
+  - Tham chiếu: Booking, WorkSchedule dùng ID của Provider. Provider dùng ID của Account
 - Account (đăng nhập, dùng chung cho nhân viên và khách):
   - Quản lý: tạo tài khoản + mật khẩu lần đầu cho nhân viên; mở khóa, cấp lại mật khẩu, đổi role
   - Khách hàng: tự đăng ký tài khoản
@@ -53,7 +53,7 @@
   - Không làm: Không can thiệp vào logic các chức năng khác, ví dụ không biết lịch trực, thanh toán như nào
   - Tham chiếu: Không tham chiếu
   - Role: 
-    - Khi quản lý thăng chức, sẽ là quyết định bảo mật. vì app của chúng ta không có chức nănng nào liên quan tới vai 
+    - Khi quản lý thăng chức, sẽ là quyết định bảo mật. vì app của chúng ta không có chức năng nào liên quan tới vai 
     trò của nhân sự cả. Vì thế khi đổi role chỉ đơn giản là đổi quyền thao tác tới hệ thống
     - Với role của khách hàng, có thể để mặc định = CUSTOMER lúc tạo, chúng ta sẽ không can thiệp gì, chỉ để
     tường minh nó không liên quan tới role của nhân viên hay quản lý. Nếu sau này làm chức năng liên quan tới vai trò 
@@ -61,19 +61,20 @@
 - Customer:
   - Khách hàng
   - Khách hàng tự cập nhật thông tin cá nhân, cấu hình nhận thông báo (tài khoản đăng nhập thuộc Account)
-- Shift: 
-  - Quản lý
-  - Khởi tạo hoặc thay đổi thông tin ca làm
-- Calender:
-  - Quản lý
-  - Thay đổi thông tin trực các ca, nhân viên nghỉ trực hoặc đổi ca
+- WorkSchedule (gồm Shift + ScheduleEntry):
+  - Ai sửa: Quản lý
+  - Thay đổi vì: tạo/sửa ca làm mẫu, xếp lịch trực theo tháng, cho nhân viên nghỉ 1 buổi, đổi ca giữa 2 nhân viên
+  - Quy tắc đổi giờ ca: xem F14 trong `yeu-cau.md` (sửa giờ ca chỉ áp dụng cho lần xếp lịch sau; sửa lịch trực mà làm lịch hẹn đã đặt rơi ra ngoài giờ trực -> chặn, quản lý hủy + hoàn tiền trước)
+  - Booking hỏi: "thợ A có rảnh 10h-10h30 thứ Bảy 3/10 không?" / "ai rảnh lúc đó?". Booking KHÔNG cần biết ca nào - ca là chi tiết bên trong. Salon bỏ ca cố định, chuyển sang giờ linh hoạt -> chỉ sửa WorkSchedule, Booking không đổi
+  - **Kết luận 1: Shift và lịch trực là 1 context, 2 bảng.** Lúc đầu tách vì nhìn thấy 2 bảng. Nhưng Shift không có quy tắc riêng và chỉ lịch trực dùng nó: thay đổi quy tắc "nhân viên tự đổi ca không cần quản lý duyệt" -> chỉ sửa lịch trực; ngay cả quy tắc "đổi giờ ca áp dụng từ lần xếp lịch sau" cũng nằm ở lịch trực. Không có thay đổi quy tắc nào chỉ sửa Shift
+  - **Kết luận 2: không gộp vào Provider.** Quy tắc "thôi việc phải được quản lý duyệt" sửa Provider, quy tắc "nhân viên tự đổi ca" sửa WorkSchedule -> 2 thay đổi nằm ở 2 chỗ khác nhau
 - Booking:
   - Khách hàng, Quản lý, nhân viên
-  - Khách hàng đặt lịch trong thời gian hoạt động. Có thể hủy trước 1 tiếng so với thời gian đặt, sau 1 tiếng không hoàn tiền.
-  - Nhân viên không thể hủy. Quản lý có thể hủy bất cứ lúc nào đi kèm thông báo cho khách
+  - Khách hàng đặt lịch trong thời gian hoạt động. Hủy lịch đã thanh toán trước giờ hẹn >= 1 tiếng thì được hoàn tiền, sát hơn vẫn hủy được nhưng không hoàn.
+  - Nhân viên không thể hủy. Quản lý có thể hủy bất cứ lúc nào, luôn hoàn tiền, kèm thông báo cho khách
   - Nếu khách đặt lịch, giữ slot cho khách. Trong 15 phút không thanh toán, hủy bỏ giữ slot. Giữ slot liên tục 3 lần trong 1 tiếng mà không thanh toán, chặn trong 1 ngày, gửi thông báo.
   - Khi khách thanh toán, đổi trạng thái, khóa slot, thông báo cho khách
-  - Khi hủy slot trước 1 tiếng, hoàn tiền về cho khách
+  - Khi khách hủy trước giờ hẹn >= 1 tiếng hoặc quản lý hủy: Booking quyết định số tiền hoàn, Payment thực hiện hoàn tiền
 - Notification:
   - Hệ thống
   - Gửi thông tin thông báo cho khách hàng khi 1 trạng thái mới được ghi nhận.
@@ -109,27 +110,28 @@
 - Muốn giá trị mới nhất -> giữ **ID**, cần thì hỏi context gốc.
 - Muốn giá trị như lúc xảy ra -> **copy** vào context của mình, tại đúng thời điểm đó (phải ghi rõ "lúc nào").
 
+> Shift -> ScheduleEntry (ID shift + copy giờ ca lúc xếp lịch) nay nằm TRONG WorkSchedule nên không còn trong bảng dưới. Quy tắc copy vẫn giữ: ca sáng đổi 8h-12h -> 9h-13h thì lịch trực tháng trước vẫn là 8h-12h.
+
 **Quy tắc chung rút ra:**
 1. **ID + copy thường đi cùng nhau:** giữ ID để biết "là cái nào", copy để giữ "giá trị lúc đó". VD Booking giữ ID dịch vụ + copy giá, thời lượng.
 2. **Giữ ID thì context gốc chỉ được xóa mềm:** Service Catalog -> "ngừng bán", Provider -> "đã nghỉ", Account -> "vô hiệu". Xóa cứng thì dữ liệu cũ trỏ vào ID không còn tồn tại.
 
-| Context dùng | Cần gì | Từ context | Cách giữ | Lý do (tình huống) |
-|---|---|---|---|---|
-| Booking | dịch vụ nào (tên) | Service Catalog | ID | Hiển thị thông tin dịch vụ hiện tại. Dịch vụ ngừng bán thì xóa mềm, lịch cũ vẫn hiển thị được |
-| Booking | giá | Service Catalog | copy lúc đặt | Khách đã trả 100k, quản lý tăng giá lên 150k -> lịch đã đặt vẫn là 100k. Số tiền hoàn khi hủy cũng tính trên giá này |
-| Booking | thời lượng | Service Catalog | copy lúc đặt (thành `time end`) | Đổi gội đầu 30 -> 45 phút không được kéo dài các lịch đã đặt |
-| Booking | khách | Customer | ID | Khách đổi SĐT sau khi đặt -> nhân viên cần gọi số mới |
-| Booking | thợ phục vụ | Provider | ID | Thợ đổi tên/SĐT -> hiển thị mới. Thợ nghỉ thì "đã nghỉ", không xóa |
-| Calender | ca nào | Shift | ID | Biết lịch trực thuộc ca nào |
-| Calender | giờ bắt đầu/kết thúc ca | Shift | copy lúc xếp lịch | Ca sáng đổi 8h-12h -> 9h-13h: lịch trực tháng trước vẫn phải là 8h-12h |
-| Calender | nhân viên trực | Provider | ID | Thông tin nhân viên luôn lấy bản mới nhất |
-| Notification | khách nào | Customer | ID | Lúc gửi mới hỏi Customer lấy SĐT/mail hiện tại |
-| Notification | SĐT/mail đã gửi tới | Customer | copy lúc gửi | Copy lúc đặt lịch thì tin nhắc đi tới số cũ nếu khách vừa đổi. Copy lúc gửi để lịch sử biết tin đã đến đâu |
-| Notification | nội dung (giờ hẹn, dịch vụ) | Booking | copy lúc gửi | Thông báo là bằng chứng đã báo gì cho khách lúc đó. Lịch thay đổi sau thì lịch sử vẫn đúng nội dung khách đã nhận |
-| Payment | lịch nào | Booking | ID | Biết giao dịch thuộc lượt đặt nào |
-| Payment | số tiền | Booking | copy lúc tạo giao dịch | Booking giữ *quyết định* (được hoàn X), Payment giữ *giao dịch thực tế* (đã gửi X sang cổng, mã GD). Đối soát cuối tháng với cổng là so với cái Payment đã gửi đi |
-| Provider | tài khoản đăng nhập | Account | ID | Chỉ cần biết tài khoản nào của nhân viên nào. Đổi mật khẩu, khóa tài khoản không liên quan Provider |
-| Customer | tài khoản đăng nhập | Account | ID | Tương tự Provider |
+| Context dùng | Cần gì                      | Từ context      | Cách giữ                        | Lý do (tình huống)                                                                                                                                                |
+|--------------|-----------------------------|-----------------|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Booking      | dịch vụ nào                 | Service Catalog | ID                              | Biết lịch thuộc dịch vụ nào (thống kê, đặt lại). Dịch vụ ngừng bán thì xóa mềm, ID cũ vẫn hợp lệ                                                                  |
+| Booking      | tên dịch vụ                 | Service Catalog | copy lúc đặt                    | Đổi "Gội đầu" -> "Gội đầu dưỡng sinh": lịch tháng trước vẫn hiển thị "Gội đầu", khách không nghĩ dữ liệu sai vì đã làm đúng dịch vụ đó                              |
+| Booking      | giá                         | Service Catalog | copy lúc đặt                    | Khách đã trả 100k, quản lý tăng giá lên 150k -> lịch đã đặt vẫn là 100k. Số tiền hoàn khi hủy cũng tính trên giá này                                              |
+| Booking      | thời lượng                  | Service Catalog | copy lúc đặt (thành `time end`) | Đổi gội đầu 30 -> 45 phút không được kéo dài các lịch đã đặt                                                                                                      |
+| Booking      | khách                       | Customer        | ID                              | Khách đổi SĐT sau khi đặt -> nhân viên cần gọi số mới                                                                                                             |
+| Booking      | thợ phục vụ                 | Provider        | ID                              | Thợ đổi tên/SĐT -> hiển thị mới. Thợ nghỉ thì "đã nghỉ", không xóa                                                                                                |
+| WorkSchedule | nhân viên trực              | Provider        | ID                              | Thợ đổi tên/SĐT -> lịch trực hiển thị bản mới. Thợ nghỉ việc thì "đã nghỉ", không xóa                                                                              |
+| Notification | khách nào                   | Customer        | ID                              | Lúc gửi mới hỏi Customer lấy SĐT/mail hiện tại                                                                                                                    |
+| Notification | SĐT/mail đã gửi tới         | Customer        | copy lúc gửi                    | Copy lúc đặt lịch thì tin nhắc đi tới số cũ nếu khách vừa đổi. Copy lúc gửi để lịch sử biết tin đã đến đâu                                                        |
+| Notification | nội dung (giờ hẹn, dịch vụ) | Booking         | copy lúc gửi                    | Thông báo là bằng chứng đã báo gì cho khách lúc đó. Lịch thay đổi sau thì lịch sử vẫn đúng nội dung khách đã nhận                                                 |
+| Payment      | lịch nào                    | Booking         | ID                              | Biết giao dịch thuộc lượt đặt nào                                                                                                                                 |
+| Payment      | số tiền                     | Booking         | copy lúc tạo giao dịch          | Booking giữ *quyết định* (được hoàn X), Payment giữ *giao dịch thực tế* (đã gửi X sang cổng, mã GD). Đối soát cuối tháng với cổng là so với cái Payment đã gửi đi |
+| Provider     | tài khoản đăng nhập         | Account         | ID                              | Chỉ cần biết tài khoản nào của nhân viên nào. Đổi mật khẩu, khóa tài khoản không liên quan Provider                                                               |
+| Customer     | tài khoản đăng nhập         | Account         | ID                              | Tương tự Provider                                                                                                                                                 |
 
 ### Giao tiep dong bo hay event
 
