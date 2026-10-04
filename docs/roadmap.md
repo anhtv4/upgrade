@@ -4,7 +4,7 @@ Muc tieu: nang trinh Java/Spring Boot tu 2-5 nam kinh nghiem len muc san sang ph
 
 Toc do: < 5 gio/tuan. Tong thoi luong uoc tinh: ~5-6 thang cho 8 phase chinh.
 
-## Phase 1 - Nen tang & kien truc (~2 tuan)
+## Phase 1 - Nen tang & kien truc (~3 tuan, keo dai tu ~2 tuan ngay 2026-10-04)
 Setup Spring Boot + Hexagonal Architecture (domain / application / infrastructure). Dinh nghia bounded context: User, Service Catalog, Booking, Notification, Payment.
 Trang thai: DANG LAM (bat dau 2026-09-23). Tien do chi tiet: `docs/progress.md`.
 Cach lam: skeleton da cat sang nhanh git `skeleton-reference`, nhanh `main` tu viet lai slice "tao booking" tu dau, chi mo skeleton khi bi; xong thi so sanh va ghi lai khac biet. Bo sung tai lieu bounded context.

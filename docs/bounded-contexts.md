@@ -73,6 +73,7 @@
   - Khách hàng đặt lịch trong thời gian hoạt động. Hủy lịch đã thanh toán trước giờ hẹn >= 1 tiếng thì được hoàn tiền, sát hơn vẫn hủy được nhưng không hoàn.
   - Nhân viên không thể hủy. Quản lý có thể hủy bất cứ lúc nào, luôn hoàn tiền, kèm thông báo cho khách
   - Nếu khách đặt lịch, giữ slot cho khách. Trong 15 phút không thanh toán, hủy bỏ giữ slot. Giữ slot liên tục 3 lần trong 1 tiếng mà không thanh toán, chặn trong 1 ngày, gửi thông báo.
+  - Chống spam (N5) thuộc Booking, KHÔNG để ở Account: bị chặn đặt lịch khác khóa đăng nhập (khách vẫn đăng nhập xem lịch sử được). Booking ghi khi đủ điều kiện spam, đọc khi khách vừa mở màn hình đặt lịch (báo sớm, không đợi chọn xong). Lưu ở 1 bảng riêng trong Booking: ID customer, chặn từ / chặn đến (datetime -> hết hạn tự mở, không cần job). Tên bảng chưa chốt (đề xuất "Hạn chế đặt lịch"). Lưu bộ đếm riêng hay đếm từ các booking -> chốt ở bước domain model. *(Claude ghi theo kết luận buổi 2026-10-04)*
   - Khi khách thanh toán, đổi trạng thái, khóa slot, thông báo cho khách
   - Khi khách hủy trước giờ hẹn >= 1 tiếng hoặc quản lý hủy: Booking quyết định số tiền hoàn, Payment thực hiện hoàn tiền
 - Notification:
@@ -86,7 +87,10 @@
       - hai thay đổi này không xảy ra cùng lúc -> tách
     2. Booking giữ lại trạng thái của đơn khi hoàn tiền (đã hủy) và quyết định hoàn bao nhiêu. Còn payment giữ trạng thái hoàn tiền (thành công, thất bại)
       - booking tính ra con số 200k, nằm ở booking. tính được 200k dựa trên giá tiền đã chốt khi đặt và thời gian hủy lịch so với giờ hẹn
-    3. chưa hiểu: ...
+    3. Payment gọi thẳng Booking hay phát sự kiện? -> **Chọn phát sự kiện.** *(Claude viết theo ý người làm, 2026-10-04. Người làm mới hiểu chung chung -> làm rõ khi code bước 7-8)*
+      - Gọi thẳng: Payment phải biết Booking (import, tên method `confirm()`). Thêm thẻ thành viên -> Payment phải thêm nhánh "nếu là thẻ thì gọi kích hoạt thẻ". Booking đổi tên method -> Payment cũng phải sửa theo
+      - Phát sự kiện: Payment chỉ báo "giao dịch cho mã X đã thành công", không biết ai nghe. Dòng nối nằm ở bên nghe. Thêm thẻ thành viên -> chỉ context thẻ viết hàm nghe, Payment giữ nguyên
+      - Cái giá chấp nhận: Payment không nhận được câu trả lời. VD Booking hủy giữ slot lúc 10:15:00, tiền về 10:15:01 -> khách mất tiền mà không có lịch -> cần luồng bù (Booking nhận tiền cho lịch đã hủy thì tự yêu cầu hoàn tiền)
   
 | Sự kiện          | Ai kích hoạt                                        | Quy tắc                                                           | Quy tắc đổi khi nào (lý do)                                                                      |
 |------------------|-----------------------------------------------------|-------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
@@ -135,4 +139,11 @@
 
 ### Giao tiep dong bo hay event
 
-(buoi sau)
+Chốt ở đây: **ai phụ thuộc vào ai** (gọi thẳng hay phát sự kiện). Cơ chế truyền sự kiện (Spring `@EventListener` trong process hay broker) -> phase sau.
+
+| Từ -> Đến               | Cách                                  | Lý do / trạng thái                                                                                                                         |
+|-------------------------|---------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| Payment -> Booking      | Phát sự kiện "thanh toán thành công" | Xem câu 3 mục Payment                                                                                                                      |
+| WorkSchedule -> Booking | **Gọi thẳng** (hỏi trước khi lưu)     | F14: trước khi cho sửa lịch trực, hỏi Booking "thợ A còn lịch hẹn trong khoảng giờ bị cắt không?". Người làm: "gọi thẳng, vì cần câu trả lời ngay để chặn". Nếu phát sự kiện thì lịch trực đã lưu xong mới biết -> chỉ còn cách tự hủy lịch hẹn, trái F14 (chặn, quản lý hủy trước). Lịch hẹn nằm ở Booking, WorkSchedule không tự kiểm tra được |
+
+**Quy tắc chung:** gọi thẳng khi bên gọi cần câu trả lời để **quyết định việc của chính mình** (có lưu/cho làm hay không). Phát sự kiện khi việc của mình **đã xảy ra rồi**, chỉ cần báo cho bên khác (VD Payment: tiền đã về là sự thật, Booking trả lời gì cũng không đổi được). Lưu ý kỹ thuật: Spring event mặc định vẫn chạy đồng bộ cùng thread/transaction - "phát sự kiện" là về **ai biết ai**, không phải "chạy sau".
