@@ -24,7 +24,7 @@
 - WorkSchedule (1 context, 2 bảng):
   - Shift (ca làm mẫu, danh mục): ID, name, time start, time end (chỉ giờ trong ngày)
   - ScheduleEntry (lịch trực, 1 nhân viên - 1 ca - 1 ngày): ID, ID shift, ID provider, time start, time end (datetime = ngày trực + giờ ca copy từ Shift lúc xếp lịch), status (on-work, day-off), reason (lý do nghỉ)
-- Booking: ID, ID provider, ID customer, ID service catalog, service name (copy lúc đặt), time start, time end (= time start + duration copy lúc đặt), price (copy lúc đặt), status (giữ slot/chờ thanh toán, đã xác nhận, đã hoàn thành (dịch vụ), đã hủy), số tiền được hoàn (quyết định của Booking khi hủy), cancel reason (lý do hủy)
+- Booking: ID, ID provider, ID customer, ID service catalog, service name (copy lúc đặt), time start, time end (= time start + duration copy lúc đặt), price (copy lúc đặt), status (giữ slot/chờ thanh toán, đã xác nhận, đã hoàn thành (dịch vụ), đã hủy), số tiền được hoàn (quyết định của Booking khi hủy), cancel reason (lý do hủy), người hủy (khách / quản lý / hệ thống - hết hạn giữ slot là hệ thống hủy; dùng cho F9 và N5, chốt 2026-10-06)
 - Notification: ID, ID customer, gửi tới (sđt/mail copy lúc gửi), content (nội dung, copy từ Booking lúc gửi), status (not-sent, sent, failed), note
 - Payment: ID, ID booking, loại (thu / hoàn), số tiền, mã giao dịch cổng, status (đang xử lý, thành công, thất bại)
 
