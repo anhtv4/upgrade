@@ -1,60 +1,62 @@
-# Tien do
+# Tiến độ
 
-> File nay duoc nap tu dong vao moi phien (qua `CLAUDE.md`). Giu NGAN GON - chi trang thai hien tai. Lich su chi tiet nam o `docs/journal/`.
+> File này được nạp tự động vào mỗi phiên (qua `CLAUDE.md`). Giữ NGẮN GỌN - chỉ trạng thái hiện tại. Lịch sử chi tiết nằm ở `docs/journal/`.
 
-Cap nhat lan cuoi: 2026-10-06
+Cập nhật lần cuối: 2026-10-07
 
-## Hien tai
+## Hiện tại
 
-- **Phase:** 1 - Nen tang & kien truc (bat dau 2026-09-23, keo len ~3 tuan -> den ~2026-10-14, chot 2026-10-04)
-- **Buoc dang lam:** 5 - Domain model
-- **Buoc tiep theo (cu the):** (1) Code value object khoang thoi gian (record) trong `domain/model/` theo thiet ke da chot o [journal 2026-10-06](journal/2026-10-06.md): compact constructor (khong null, start truoc end, `IllegalArgumentException`), `overlaps(other)` tra `boolean`, khoang nua mo `[start, end)`, KHONG kiem tra qua khu. Kem 3 test JUnit thuan (start >= end nem loi; 9h-10h vs 10h-11h khong trung; 9h-10h vs 9h30-10h30 trung). (2) Aggregate `Booking`: `createNew` (kiem tra qua khu o day) / `reconstitute`, 4 trang thai + field nguoi huy. Tai lieu con treo hoan thien dan khi code.
+- **Phase:** 1 - Nền tảng & kiến trúc (bắt đầu 2026-09-23, kéo lên ~3 tuần -> đến ~2026-10-14, chốt 2026-10-04)
+- **Bước đang làm:** 5 - Domain model. Xong `TimeRange` + 7 test. `Booking` hiện có là **bản nháp Claude viết** (đã commit, để tham khảo), chưa có test.
+- **Bước tiếp theo (cụ thể):** (1) Tự viết một class Booking luyện tập (VD `BookingDraft`), không chép bản nháp: `createNew(customerId, timeRange, now)` / `reconstitute`, `markPaymentReceived`, `complete`, `cancel(role, id)` -> Claude đánh giá, so với bản nháp. (2) Tự viết test cho Booking theo mẫu `TimeRangeTest` (đặt quá khứ; thanh toán lịch đã hủy; SYSTEM hủy lịch `CONFIRMED`; CUSTOMER hủy không có ID). Chi tiết: [journal 2026-10-07](journal/2026-10-07.md).
 
 ## Checklist Phase 1
 
-- [x] 1. Setup git: nhanh `skeleton-reference` (skeleton tham khao) + `main` sach, push len GitHub (2026-09-23)
-- [x] 2. Doi default branch tren GitHub sang `main` (nguoi lam tu lam tren web) (2026-09-23)
-- [x] 3. Tai lieu bounded context `docs/bounded-contexts.md` (2026-10-04 - dong theo han tai lieu, cac cau con treo hoan thien khi code)
-- [x] 4. `BookingApplication` - app rong chay duoc, vao duoc `/h2-console` (2026-10-06)
-- [ ] 5. Domain model: value object (record) + aggregate `Booking` voi static factory
-- [ ] 6. Domain logic: port in/out, domain service, Strategy cho conflict check + unit test JUnit thuan
-- [ ] 7. Application: implement use case "tao booking"
+- [x] 1. Setup git: nhánh `skeleton-reference` (skeleton tham khảo) + `main` sạch, push lên GitHub (2026-09-23)
+- [x] 2. Đổi default branch trên GitHub sang `main` (người làm tự làm trên web) (2026-09-23)
+- [x] 3. Tài liệu bounded context `docs/bounded-contexts.md` (2026-10-04 - đóng theo hạn tài liệu, các câu còn treo hoàn thiện khi code)
+- [x] 4. `BookingApplication` - app rỗng chạy được, vào được `/h2-console` (2026-10-06)
+- [ ] 5. Domain model: value object (record) + aggregate `Booking` với static factory (`TimeRange` xong 2026-10-07; Booking người làm tự viết + test còn lại)
+- [ ] 6. Domain logic: port in/out, domain service, Strategy cho conflict check + unit test JUnit thuần
+- [ ] 7. Application: implement use case "tạo booking"
 - [ ] 8. Infrastructure: JPA entity + repository adapter, controller + DTO, exception handler, bean config
-- [ ] 9. Chay end-to-end (curl tao booking, thu trung lich -> 409)
-- [ ] 10. So sanh voi skeleton (`git diff skeleton-reference main -- src/`), ghi khac biet + ly do vao journal
-- [ ] 11. ADR ket thuc phase (VD: ranh gioi bounded context) + cap nhat muc "Kien truc" trong `CLAUDE.md` theo code thuc te
-- [ ] 12. `/kiem-tra` Phase 1 -> cap nhat `docs/competencies.md`
+- [ ] 9. Chạy end-to-end (curl tạo booking, thử trùng lịch -> 409)
+- [ ] 10. So sánh với skeleton (`git diff skeleton-reference main -- src/`), ghi khác biệt + lý do vào journal
+- [ ] 11. ADR kết thúc phase (VD: ranh giới bounded context) + cập nhật mục "Kiến trúc" trong `CLAUDE.md` theo code thực tế
+- [ ] 12. `/kiem-tra` Phase 1 -> cập nhật `docs/competencies.md`
 
-## Cau hoi / quyet dinh dang treo
+## Câu hỏi / quyết định đang treo
 
-- Cau 3 Payment (phat su kien thay vi goi thang): da chot, nhung nguoi lam moi "hieu chung chung" -> lam ro khi code buoc 7-8. `/kiem-tra` hoi lai.
-- Bang chan spam trong Booking: ten ("Han che dat lich"?) + bo dem luu rieng hay dem tu booking (da kha thi nho field nguoi huy) -> chot o buoc 5.
-- Quy tac ">= 1 tieng thi hoan" nam o Booking hay Payment (ben nao biet gio hen)? -> buoc 7-8.
-- Tien ve sau khi lich da het han giu slot (`CANCELLED`) -> luong bu hoan tien.
-- F16 (ai tao/sua/huy lich, luc nao) nam o dau khi Log khong phai context? "Ai thao tac" / field nguoi huy dinh danh bang ID Account, Provider hay Customer?
-- F4 (ca lam, ngay nghi): giu o Phase 2 hay dua vao "Chua can"?
-- Notification co can `ID booking` khong (noi dung da copy tu Booking luc gui)?
+- Câu 3 Payment (phát sự kiện thay vì gọi thẳng): đã chốt, nhưng người làm mới "hiểu chung chung" -> làm rõ khi code bước 7-8. `/kiem-tra` hỏi lại.
+- `setStatus()` public gây lỗi gì (tình huống cụ thể)? Hỏi 3 lần buổi 2026-10-07 chưa trả lời -> `/kiem-tra` hỏi lại.
+- Bảng chặn spam: giờ đếm được từ booking (`createdAt` + `CancellerRole.SYSTEM`) -> đề xuất không cần bảng riêng, chốt khi viết Booking.
+- Quy tắc ">= 1 tiếng thì hoàn" nằm ở Booking hay Payment (bên nào biết giờ hẹn)? -> bước 7-8.
+- Tiền về sau khi lịch đã hết hạn giữ slot (`CANCELLED`) -> luồng bù hoàn tiền.
+- ID người hủy (đã chốt lưu cả vai trò + ID) và "ai thao tác" của F16: ID Account, Provider hay Customer?
+- Lombok cho JPA entity -> quyết ở bước 8 (domain đã chọn Java thuần + record).
+- F4 (ca làm, ngày nghỉ): giữ ở Phase 2 hay đưa vào "Chưa cần"?
+- Notification có cần `ID booking` không (nội dung đã copy từ Booking lúc gửi)?
 
-## Diem yeu dang theo doi
+## Điểm yếu đang theo dõi
 
-Quan sat qua nhieu buoi (Claude cap nhat khi thay lap lai). Dung de chon trong tam goi y va cau hoi kiem tra.
+Quan sát qua nhiều buổi (Claude cập nhật khi thấy lặp lại). Dùng để chọn trọng tâm gợi ý và câu hỏi kiểm tra.
 
-- Thiet ke bat dau tu bang DB thay vi tu trach nhiem/hanh vi: coi moi bang la 1 context, gom theo danh tu, gui du lieu vao bang co san `status`. Bang chung: [2026-09-24](journal/2026-09-24.md), [2026-09-24 buoi 2](journal/2026-09-24-2.md), [2026-09-24 buoi 3](journal/2026-09-24-3.md) (them `locked` vao cung field `status`), [2026-09-28](journal/2026-09-28.md), [2026-09-29](journal/2026-09-29.md), [2026-10-02](journal/2026-10-02.md) (ket luan dau "tach Shift/Calendar" vi thay 2 bang), [2026-10-04](journal/2026-10-04.md) (dat co chan spam o Account vi "Booking khong co truong nao"; nham lich hen nam o WorkSchedule). [2026-10-06](journal/2026-10-06.md) (ly do "dung chung 1 field"; "het han = xoa lich"). Tien bo: 2026-10-02 tu rut ra "tach bang khong co nghia la tach context"; 2026-10-04 tu nhan "dang noi context, chua noi bang" va tu de xuat bang rieng trong Booking.
-- Phep thu ranh gioi: nham **thao tac du lieu** (quan ly bam tren man hinh) voi **thay doi quy tac** (dev sua code); tra loi mau thuan voi F14 vua chot (doi gio ca -> lich da xep cung doi). Bang chung: [2026-10-02](journal/2026-10-02.md) (bac 3, "9-11h"), [2026-10-04](journal/2026-10-04.md) (bac 2, "sua 2 cho", "sua ca truc tuan nay"). Cach tap: truoc khi dem, hoi "dev co phai sua dong code nao khong?".
-- Ly do chung chung / tu khoa thay vi tinh huong cu the. Bang chung: [2026-09-29](journal/2026-09-29.md) (4 lan), [2026-10-02](journal/2026-10-02.md) ("lien ket chat hanh vi"), [2026-10-04](journal/2026-10-04.md) ("anh huong do chinh xac du lieu", ten "bang theo doi dat lich"), [2026-10-06](journal/2026-10-06.md) (on nhanh: chep dieu kien F9 thay vi ly do thiet ke; ly do chon B tu mau thuan). Cach tap: moi ly do phai kem 1 tinh huong "neu X doi thi...".
-- Nho Claude viet/tong hop ket luan thay vi tu viet bang loi cua minh -> de "hieu khi nghe" ma chua tu dien dat duoc. Bang chung: [2026-09-29](journal/2026-09-29.md), [2026-10-02](journal/2026-10-02.md), [2026-10-04](journal/2026-10-04.md) (cau 3 Payment, ket luan chong spam - buoi thu 3 lien tiep). Tien bo: 2026-10-06 tu viet lai ly do chon B (sau 1 lan chi ra mau thuan). Cach tap: doc lai ban Claude viet, tu noi lai 1-2 cau; `/kiem-tra` se hoi lai. Khi chua hieu: viet "hieu den day: ..., vuong o: ..." de Claude nham dung cho.
+- Thiết kế bắt đầu từ bảng DB thay vì từ trách nhiệm/hành vi: coi mỗi bảng là 1 context, gom theo danh từ, gửi dữ liệu vào bảng có sẵn `status`. Bằng chứng: [2026-09-24](journal/2026-09-24.md), [2026-09-24 buổi 2](journal/2026-09-24-2.md), [2026-09-24 buổi 3](journal/2026-09-24-3.md) (thêm `locked` vào cùng field `status`), [2026-09-28](journal/2026-09-28.md), [2026-09-29](journal/2026-09-29.md), [2026-10-02](journal/2026-10-02.md) (kết luận đầu "tách Shift/Calendar" vì thấy 2 bảng), [2026-10-04](journal/2026-10-04.md) (đặt cờ chặn spam ở Account vì "Booking không có trường nào"; nhầm lịch hẹn nằm ở WorkSchedule), [2026-10-06](journal/2026-10-06.md) (lý do "dùng chung 1 field"; "hết hạn = xóa lịch"). Tiến bộ: 2026-10-02 tự rút ra "tách bảng không có nghĩa là tách context"; 2026-10-04 tự nhận "đang nói context, chưa nói bảng" và tự đề xuất bảng riêng trong Booking.
+- Phép thử ranh giới: nhầm **thao tác dữ liệu** (quản lý bấm trên màn hình) với **thay đổi quy tắc** (dev sửa code); trả lời mâu thuẫn với F14 vừa chốt (đổi giờ ca -> lịch đã xếp cũng đổi). Bằng chứng: [2026-10-02](journal/2026-10-02.md) (bậc 3, "9-11h"), [2026-10-04](journal/2026-10-04.md) (bậc 2, "sửa 2 chỗ", "sửa ca trực tuần này"). Cách tập: trước khi đếm, hỏi "dev có phải sửa dòng code nào không?".
+- Lý do chung chung / từ khóa thay vì tình huống cụ thể. Bằng chứng: [2026-09-29](journal/2026-09-29.md) (4 lần), [2026-10-02](journal/2026-10-02.md) ("liên kết chặt hành vi"), [2026-10-04](journal/2026-10-04.md) ("ảnh hưởng độ chính xác dữ liệu", tên "bảng theo dõi đặt lịch"), [2026-10-06](journal/2026-10-06.md) (ôn nhanh: chép điều kiện F9 thay vì lý do thiết kế; lý do chọn B tự mâu thuẫn), [2026-10-07](journal/2026-10-07.md) ("tránh lặp logic" thiếu hậu quả). Tiến bộ: 2026-10-07 ôn nhanh trả lời bằng tình huống (`reconstitute` lịch cũ), phân tích ID vs vai trò người hủy có lợi/hại cả 2 phía. Cách tập: mỗi lý do phải kèm 1 tình huống "nếu X đổi thì...".
+- Nhờ Claude viết/tổng hợp thay vì tự viết -> dễ "hiểu khi nghe" mà chưa tự làm được. Bằng chứng: [2026-09-29](journal/2026-09-29.md), [2026-10-02](journal/2026-10-02.md), [2026-10-04](journal/2026-10-04.md) (kết luận, buổi thứ 3 liên tiếp), [2026-10-07](journal/2026-10-07.md) (lấn sang code: nhờ viết `TimeRange` + test và bản nháp `Booking`; chưa hiểu vai trò record dù đã chốt thiết kế 06/10). Tiến bộ: 2026-10-06 tự viết lại lý do chọn B; 2026-10-07 tự viết bản đầu `TimeRange` và tự đề xuất buổi sau viết lại Booking để Claude đánh giá. Cách tập: Claude viết mẫu xong thì người làm tự viết lại bản của mình; `/kiem-tra` sẽ hỏi lại.
+- Gặp nhiều câu hỏi thì trả lời câu dễ, bỏ qua câu khó / câu "vì sao" rồi đi tiếp; muốn bỏ phần tốn công (test). Bằng chứng: [2026-10-06](journal/2026-10-06.md) (4 lần trong 1 buổi), [2026-10-07](journal/2026-10-07.md) (câu `setStatus()` bỏ qua 3 lần; lần 2 muốn bỏ test). Cách tập: Claude hỏi ít câu hơn mỗi lượt; người làm trả lời hết hoặc nói rõ "bỏ qua vì ...".
 
-- Gap nhieu cau hoi thi tra loi cau de, bo qua cau kho / cau "vi sao" roi di tiep. Bang chung: [2026-10-06](journal/2026-10-06.md) (4 lan trong 1 buoi: cau on nhanh, "vi sao class main o package goc", cau 3 dem N5, cau viet test). Cach tap: Claude hoi it cau hon moi luot; nguoi lam tra loi het hoac noi ro "bo qua vi ...".
+## Nhật ký các buổi
 
-## Nhat ky cac buoi
-
-- 2026-09-23 - [Setup du an va he thong theo doi](journal/2026-09-23.md)
-- 2026-09-23 - [Doi default branch GitHub sang main](journal/2026-09-23-2.md)
-- 2026-09-24 - [Yeu cau khach hang va ban nhap bounded context](journal/2026-09-24.md)
-- 2026-09-24 - [Y nghia bounded context, tra loi "ai sua, vi sao sua"](journal/2026-09-24-2.md)
-- 2026-09-24 - [Tach Account khoi Provider, chot huy/hoan tien](journal/2026-09-24-3.md)
-- 2026-09-28 - [Chot role o Account, tach Payment khoi Booking](journal/2026-09-28.md)
-- 2026-09-29 - [Viet lai Payment, bang tham chieu ID/copy](journal/2026-09-29.md)
-- 2026-10-02 - [Gom Shift + Calendar thanh WorkSchedule](journal/2026-10-02.md)
-- 2026-10-04 - [Goi thang hay phat su kien, dong buoc 3](journal/2026-10-04.md)
-- 2026-10-06 - [App chay duoc, chot status Booking, thiet ke value object](journal/2026-10-06.md)
+- 2026-09-23 - [Setup dự án và hệ thống theo dõi](journal/2026-09-23.md)
+- 2026-09-23 - [Đổi default branch GitHub sang main](journal/2026-09-23-2.md)
+- 2026-09-24 - [Yêu cầu khách hàng và bản nháp bounded context](journal/2026-09-24.md)
+- 2026-09-24 - [Ý nghĩa bounded context, trả lời "ai sửa, vì sao sửa"](journal/2026-09-24-2.md)
+- 2026-09-24 - [Tách Account khỏi Provider, chốt hủy/hoàn tiền](journal/2026-09-24-3.md)
+- 2026-09-28 - [Chốt role ở Account, tách Payment khỏi Booking](journal/2026-09-28.md)
+- 2026-09-29 - [Viết lại Payment, bảng tham chiếu ID/copy](journal/2026-09-29.md)
+- 2026-10-02 - [Gom Shift + Calendar thành WorkSchedule](journal/2026-10-02.md)
+- 2026-10-04 - [Gọi thẳng hay phát sự kiện, đóng bước 3](journal/2026-10-04.md)
+- 2026-10-06 - [App chạy được, chốt status Booking, thiết kế value object](journal/2026-10-06.md)
+- 2026-10-07 - [TimeRange + test, thiết kế Booking, quy ước ngôn ngữ](journal/2026-10-07.md)

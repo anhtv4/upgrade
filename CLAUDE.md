@@ -105,8 +105,8 @@ infrastructure/    adapter - noi duy nhat duoc dung Spring/JPA/HTTP
 - `domain/` khong import bat ky thu gi tu Spring hay `jakarta.persistence.*`. Class domain khong gan `@Component`; domain service/strategy wire trong config cua `infrastructure/`.
 - Aggregate dung static factory, khong dung constructor public: `createNew(...)` cho doi tuong moi, `reconstitute(...)` chi dung trong adapter khi doc tu persistence.
 - Domain bao loi bang exception Java thuong; exception handler map `IllegalStateException` -> 409, `IllegalArgumentException` -> 400 (chuan RFC 7807 de Phase 4).
-- Test domain la JUnit thuan, khong Spring context. Ten test method: tieng Viet khong dau, snake_case.
-- Comment va tai lieu viet tieng Viet khong dau.
+- Test domain la JUnit thuan, khong Spring context. Ten test method: tiếng Anh, snake_case (VD `start_after_end_throws`).
+- Ngôn ngữ (chốt 2026-10-07): **code dùng tiếng Anh** - tên class/hàm/biến, tên test, message exception. **Comment, Javadoc và tài liệu (`docs/`, `CLAUDE.md`, `.claude/`) viết tiếng Việt có dấu.** File tài liệu cũ viết không dấu: giữ nguyên, chuyển dần khi sửa tới; không sửa `docs/journal/` cũ.
 - Moi phase ket thuc bang 1 ADR moi trong `docs/adr/` (`000N-ten.md`, cac muc: Boi canh / Quyet dinh / Ly do / Danh doi / Trang thai). Day la thoi quen dang luyen, khong phai thu tuc hinh thuc.
 
 ## Lo trinh
