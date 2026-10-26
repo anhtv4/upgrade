@@ -69,8 +69,8 @@ Cot "Ky nang" la ky nang se luyen, KHONG phai loi giai bat buoc.
 
 | Yeu cau | Phase | Ky nang luyen |
 |---|---|---|
-| F2, F3 (tam check theo khach) | 1 | Hexagonal, aggregate, Strategy |
-| F3 theo nhan vien, F5 | 2 | Domain model, value object, bat bien |
+| F2, F3 (check theo nhân viên, chốt 2026-10-26) | 1 | Hexagonal, aggregate, Strategy |
+| F5 | 2 | Domain model, value object, bat bien |
 | F4 | 2 | Nhieu rule kiem tra -> ket hop Strategy *(de xuat bo sung, roadmap chua ghi)* |
 | F7, F9, F10 | 2 | State pattern |
 | F8 | 2 (mo phong) / 8 | Scheduled job, domain event |
