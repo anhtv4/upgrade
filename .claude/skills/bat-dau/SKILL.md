@@ -20,7 +20,7 @@ Muc tieu: trong < 2 phut, nguoi lam biet minh dang o dau va buoi nay lam gi. Tra
    - **On nhanh:** 1 cau hoi ngan ve kien thuc buoi truoc (lay tu "Rut ra" cua journal). Doi nguoi lam tra loi truoc khi di tiep; neu tra loi chua vung thi giai thich ngan, ghi nho de dua vao "Diem yeu dang theo doi" khi `/ket-thuc`. Bo qua neu buoi truoc chi la setup/viec co hoc.
    - **Buoi nay:** de xuat 1 muc tieu vua suc 1 buoi (~1-2 gio) tu "Buoc tiep theo". Neu buoc qua lon, de xuat chia nho.
    - **Cau hoi treo:** nhac neu co muc lien quan.
-4. Hoi nguoi lam: dong y muc tieu hay muon doi? Co bao nhieu thoi gian buoi nay?
+4. Hỏi người làm: đồng ý mục tiêu hay muốn đổi? KHÔNG hỏi thời gian buổi - Claude tự áng chừng (~1-1,5 giờ). Người làm chấp nhận đi chậm mà chắc (chốt 2026-10-27).
 
 ## Khong lam
 
