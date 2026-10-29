@@ -31,7 +31,8 @@ Chung toi la **mot salon** (cat toc, goi dau, massage, cham soc da), khoang **10
 **Thanh toan va vong doi lich**
 - F7. Khach phai **thanh toan truoc** thi lich moi duoc xac nhan. Chua tra tien thi lich o trang thai cho.
 - F8. Qua **15 phut** ke tu khi dat ma chua thanh toan thi lich tu huy, slot duoc tra lai.
-- F9. Khach huy duoc lich cua minh (truoc khi thanh toan, hoac sau khi da xac nhan). Quan ly huy duoc moi lich, bat cu luc nao. Nhan vien khong duoc huy lich.
+- F9. Khách hủy được lịch của mình (trước khi thanh toán, hoặc sau khi đã xác nhận). Quản lý hủy được mọi lịch, miễn là **chưa tới giờ hẹn**. Nhân viên không được hủy lịch.
+  - Đã tới/qua giờ hẹn -> khách và quản lý **không hủy được**. Hệ thống vẫn hủy được lịch đang giữ slot hết hạn (F8), kể cả khi đã qua giờ hẹn (VD đặt 8h55 cho lịch 9h, 9h10 hết hạn giữ slot) (chốt 2026-10-29).
   - Lich da thanh toan, khach huy **truoc gio hen it nhat 1 tieng** -> duoc hoan tien. Huy sat hon 1 tieng -> van huy duoc nhung **khong hoan tien**. Quan ly huy lich da thanh toan -> **luon hoan tien** (chot 2026-09-24).
 - F10. Lam xong dich vu, nhan vien danh dau **hoan thanh**. Lich da hoan thanh hoac da huy thi khong doi duoc nua.
 
