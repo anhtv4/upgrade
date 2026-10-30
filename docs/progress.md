@@ -2,13 +2,13 @@
 
 > File này được nạp tự động vào mỗi phiên (qua `CLAUDE.md`). Giữ NGẮN GỌN - chỉ trạng thái hiện tại. Lịch sử chi tiết nằm ở `docs/journal/`.
 
-Cập nhật lần cuối: 2026-10-29
+Cập nhật lần cuối: 2026-10-30
 
 ## Hiện tại
 
 - **Phase:** 1 - Nền tảng & kiến trúc (bắt đầu 2026-09-23, mốc cũ ~2026-10-14 đã qua). 2026-10-27 người làm chấp nhận kéo dài để đi chậm mà chắc, không đặt mốc cứng mới.
-- **Bước đang làm:** 5 - Domain model. Xong `TimeRange` + 7 test. `Booking.java` là **bản nháp Claude viết** (giữ để so sánh). Người làm tự viết `BookingDraft` (vẫn dùng Lombok): 3 hàm hủy `cancelByCustomer` / `cancelByManager` / `cancelBySystem` + 2 hàm private `checkStatusToCancel()`, `markDataCancelled(...)`, hằng số `FREE_CANCEL_BEFORE`, field người hủy (role + ID, hệ thống = `null`). Đã dọn file thừa (`service/`, `domain/dto/`, `Customer`), sửa scope Lombok thành `provided`, build IntelliJ chạy được ([journal 2026-10-29](journal/2026-10-29.md)).
-- **Bước tiếp theo (cụ thể):** (1) Hoàn thiện F9 trong `BookingDraft`: tạo exception riêng của domain thay `RuntimeException` (dòng kiểm tra chủ lịch); thêm message cho `IllegalStateException`; `cancelBySystem` đổi sang kiểu chỉ cho phép (`!= PENDING_PAYMENT`); thêm kiểm tra "đã tới giờ hẹn -> chặn" cho khách và quản lý (không đưa vào hàm private chung); thống nhất thứ tự tham số. (2) Phác thảo + viết F10 `complete` (nhân viên bấm; kiểm tra thời gian + trạng thái; lưu ai bấm, lúc nào), rồi `reconstitute`, getter. (3) Viết lại `BookingDraft` không Lombok, dùng static factory, `now` truyền vào -> Claude đánh giá -> viết test theo mẫu `TimeRangeTest` (`mvn test`; `mvn` chưa có trong PATH của shell Claude, 29/10 mới kiểm bằng build IntelliJ).
+- **Bước đang làm:** 5 - Domain model. Xong `TimeRange` + 7 test. `Booking.java` là **bản nháp Claude viết** (giữ để so sánh). Người làm tự viết `BookingDraft` (vẫn dùng Lombok): 3 hàm hủy `cancelByCustomer` / `cancelByManager` / `expire` (đổi tên từ `cancelBySystem` sau buổi 29/10) + 3 hàm private `checkCancelState()`, `checkCancelTime(now)` (chỉ khách và quản lý gọi), `markDataCancelled(...)`; tham số thống nhất `now` đứng đầu; hằng số `FREE_CANCEL_BEFORE`, field người hủy (role + ID, hệ thống = `null`). Đã dọn file thừa (`service/`, `domain/dto/`, `Customer`), sửa scope Lombok thành `provided`, build IntelliJ chạy được ([journal 2026-10-29](journal/2026-10-29.md), [2026-10-30](journal/2026-10-30.md)).
+- **Bước tiếp theo (cụ thể):** (1) Hoàn thiện F9 trong `BookingDraft`: tạo exception riêng của domain thay `RuntimeException` (dòng kiểm tra chủ lịch); thêm message cho `IllegalStateException`; `expire` đổi sang kiểu chỉ cho phép (`!= PENDING_PAYMENT`); xét ca biên của `checkCancelTime` (bấm hủy đúng giờ hẹn). (2) Phác thảo + viết F10 `complete` (nhân viên bấm; kiểm tra thời gian + trạng thái; lưu ai bấm, lúc nào), rồi `reconstitute`, getter. (3) Viết lại `BookingDraft` không Lombok, dùng static factory, `now` truyền vào -> Claude đánh giá -> viết test theo mẫu `TimeRangeTest` (`mvn test`; `mvn` chưa có trong PATH của shell Claude, 29/10 mới kiểm bằng build IntelliJ).
 
 ## Checklist Phase 1
 
@@ -27,7 +27,6 @@ Cập nhật lần cuối: 2026-10-29
 
 ## Câu hỏi / quyết định đang treo
 
-- Đổi tên `cancelBySystem` -> `expire(now)`? (đã chốt tách 3 hàm hủy 2026-10-28; tên do người làm tự quyết)
 - F10 (chốt 29/10: giữ đúng yêu cầu, nhân viên bấm hoàn thành): `complete` cho phép từ giờ bắt đầu hay giờ kết thúc? Khách không đến -> tạm để `CONFIRMED` (trạng thái nói sai "chưa diễn ra") -> quyết khi làm F10.
 - Gom `cancelledByRole` + `cancelledById` vào 1 record (giữ quy tắc "HỆ THỐNG ⇔ id null")? Người làm đang chọn 2 field rời.
 - Phase 1 lấy `duration` từ đâu khi chưa có Service Catalog (stub hay request) -> bước 7.
@@ -70,3 +69,4 @@ Quan sát qua nhiều buổi (Claude cập nhật khi thấy lặp lại). Dùng
 - 2026-10-27 - [Phác thảo F2, F7, F8: tính năng -> hàm -> kiểm tra -> field](journal/2026-10-27.md)
 - 2026-10-28 - [F9: bảng ai hủy ở trạng thái nào, chọn tách 3 hàm hủy](journal/2026-10-28.md)
 - 2026-10-29 - [F9: 3 hàm hủy chạy được trong BookingDraft, chốt exception và F10](journal/2026-10-29.md)
+- 2026-10-30 - [Dọn tài liệu bị rename lan sang, đối chiếu code](journal/2026-10-30.md)
