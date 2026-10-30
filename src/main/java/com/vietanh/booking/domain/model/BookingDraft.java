@@ -36,8 +36,8 @@ public class BookingDraft {
         if (!Objects.equals(this.customerId, cancelCustomerId)) {
             throw new RuntimeException();
         }
-
-        this.validateCancel(now);
+        this.checkCancelTime(now);
+        this.checkCancelState();
 
         if (this.status == BookingStatus.CONFIRMED) {
             Duration duration = Duration.between(now, this.timeRange.timeStart());
@@ -52,7 +52,8 @@ public class BookingDraft {
 
     public void cancelByManager(LocalDateTime now, UUID managerId) {
 
-        this.validateCancel(now);
+        this.checkCancelTime(now);
+        this.checkCancelState();
 
         if (this.status == BookingStatus.CONFIRMED) {
                 // hoàn tiền
@@ -61,9 +62,9 @@ public class BookingDraft {
         this.markDataCancelled(now, managerId, CancellerRole.MANAGER);
     }
 
-    public void cancelBySystem(LocalDateTime now) {
+    public void expire(LocalDateTime now) {
 
-        this.validateCancel(now);
+        this.checkCancelState();
 
         if (this.status == BookingStatus.CONFIRMED) {
             throw new IllegalStateException();
@@ -72,12 +73,14 @@ public class BookingDraft {
         this.markDataCancelled(now, null, CancellerRole.SYSTEM);
     }
 
-    private void validateCancel(LocalDateTime now) {
-        if (now.isAfter(this.timeRange.timeStart())) {
+    private void checkCancelState() {
+        if (this.status == BookingStatus.CANCELLED || this.status == BookingStatus.COMPLETED) {
             throw new IllegalStateException();
         }
+    }
 
-        if (this.status == BookingStatus.CANCELLED || this.status == BookingStatus.COMPLETED) {
+    private void checkCancelTime(LocalDateTime now) {
+        if (now.isAfter(this.timeRange.timeStart())) {
             throw new IllegalStateException();
         }
     }
